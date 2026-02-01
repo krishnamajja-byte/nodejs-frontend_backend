@@ -1,3 +1,4 @@
+
 version: "3.8"
 services:
   mongodb:
@@ -37,7 +38,18 @@ services:
       - mongodb  #name of the mongodb service
 
 
-  # frontend:
+  frontend:
+    build: ./frontend
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./frontend/src:/app/src
+    
+    stdin_open: true
+    tty: true
+    depends_on:
+      - backend
+
 
 volumes:
   data:
