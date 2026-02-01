@@ -1,0 +1,46 @@
+version: "3.8"
+services:
+  mongodb:
+    image: 'mongo'
+    volumes:
+      - data:/data/db
+    # You can set environment variables directly here:
+    #environment:
+    # MONGO_INITDB_ROOT_USERNAME: max
+    # MONGO_INITDB_ROOT_PASSWORD: secret
+      #- MONGO_INITDB_ROOT_USERNAME=max
+
+    # Or use the env_file option:
+    env_file:
+      - ./env/mongodb.env
+    # Networks can be defined explicitly, but Docker will create a default network automatically.
+    # The --rm and -d flags don’t need to be specified here:
+    #   --rm ensures containers are removed when stopped with `docker compose down`
+    #   -d can be passed when running `docker compose up` to start in detached mode.
+
+  backend:
+    build: ./backend
+    # build:
+      # context: ./backend
+      # dockerfile: Dockerfile-dev if the dockerfile name is different and it will help full to define the docker file generation path
+      # args:
+    ports:
+      - '80:80'
+    volumes:
+      - logs:/app/logs
+      - ./backend:/app
+      - /app/node_modules
+    env_file:
+      - ./env/backed.env
+
+    depends_on:
+      - mongodb  #name of the mongodb service
+
+
+  # frontend:
+
+volumes:
+  data:
+  logs:
+  # Named volumes must be declared here.
+  # If the same volume is used by multiple services, it will be shared across all containers.
